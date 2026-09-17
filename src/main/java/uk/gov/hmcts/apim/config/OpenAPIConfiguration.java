@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.demo.config;
+package uk.gov.hmcts.apim.config;
 
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -13,13 +13,13 @@ public class OpenAPIConfiguration {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-            .info(new Info().title("rpe demo")
-                      .description("rpe demo")
+            .info(new Info().title("API Marketplace Examples")
+                      .description("Mock server exposing the examples held in published API specifications")
                       .version("v0.0.1")
                       .license(new License().name("MIT").url("https://opensource.org/licenses/MIT")))
             .externalDocs(new ExternalDocumentation()
                               .description("README")
-                              .url("https://github.com/hmcts/spring-boot-template"));
+                              .url("https://github.com/hmcts/service-api-marketplace-examples"));
     }
 
 }

@@ -13,8 +13,8 @@ plugins {
 }
 
 application {
-  mainClass = 'uk.gov.hmcts.reform.demo.Application'
-  group = 'uk.gov.hmcts.reform'
+  mainClass = 'uk.gov.hmcts.apim.Application'
+  group = 'uk.gov.hmcts.apim'
   version = '0.0.1'
 }
 
@@ -39,13 +39,13 @@ def configureSourceSet(String name) {
 
 configurations {
   functionalTestImplementation.extendsFrom testImplementation
-  functionalTestRuntimeOnly.extendsFrom runtimeOnly
+  functionalTestRuntimeOnly.extendsFrom testRuntimeOnly
 
   integrationTestImplementation.extendsFrom testImplementation
-  integrationTestRuntimeOnly.extendsFrom runtimeOnly
+  integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
 
   smokeTestImplementation.extendsFrom testImplementation
-  smokeTestRuntimeOnly.extendsFrom runtimeOnly
+  smokeTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -102,8 +102,8 @@ tasks.check.dependsOn(integration)
 
 sonarqube {
   properties {
-    property "sonar.projectName", "Reform :: spring-boot-template"
-    property "sonar.projectKey", "uk.gov.hmcts.reform:spring-boot-template"
+    property "sonar.projectName", "APIM :: marketplace-examples"
+    property "sonar.projectKey", "uk.gov.hmcts.apim:marketplace-examples"
   }
 }
 
@@ -155,10 +155,11 @@ dependencies {
 
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.5.7'
+  testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
 }
 
 bootJar {
-  archiveFileName = "spring-boot-template.jar"
+  archiveFileName = "apim-marketplace-examples.jar"
 
   manifest {
     attributes('Implementation-Version': project.version.toString())

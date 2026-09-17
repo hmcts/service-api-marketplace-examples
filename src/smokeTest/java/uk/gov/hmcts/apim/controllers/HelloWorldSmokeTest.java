@@ -1,39 +1,36 @@
-package uk.gov.hmcts.reform.demo.controllers;
+package uk.gov.hmcts.apim.controllers;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class SampleFunctionalTest {
-    protected static final String CONTENT_TYPE_VALUE = "application/json";
+class HelloWorldSmokeTest {
 
-    @Value("${TEST_URL:http://localhost:8080}")
+    @Value("${TEST_URL:http://localhost:8081}")
     private String testUrl;
 
     @BeforeEach
-    public void setUp() {
-        RestAssured.baseURI = testUrl;
+    void setUp() {
         RestAssured.useRelaxedHTTPSValidation();
     }
 
     @Test
-    void functionalTest() {
+    void calling_hello_on_a_deployed_instance_should_return_hello_world() {
         Response response = given()
-            .contentType(ContentType.JSON)
+            .baseUri(testUrl)
             .when()
-            .get()
+            .get("/hello")
             .then()
             .extract().response();
 
-        Assertions.assertEquals(200, response.statusCode());
-        Assertions.assertTrue(response.asString().startsWith("Welcome"));
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.asString()).isEqualTo("Hello World");
     }
 }

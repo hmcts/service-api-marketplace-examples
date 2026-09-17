@@ -1,14 +1,12 @@
-version: '2.1'
-
 services:
-  spring-boot-template:
+  apim-marketplace-examples:
     build:
       context: .
       args:
         - http_proxy
         - https_proxy
         - no_proxy
-    image: hmctspublic.azurecr.io/spring-boot/template
+    image: hmctsprod.azurecr.io/apim/marketplace-examples
     environment:
       # these environment variables are used by java-logging library
       - ROOT_APPENDER
