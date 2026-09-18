@@ -171,6 +171,109 @@ class SpecParserEdgeCaseTest {
     }
 
     @Test
+    void an_inline_example_value_should_be_used_as_declared() {
+        ApiExamples parsed = parser.parse(SOURCE, """
+            openapi: 3.0.3
+            info:
+              title: T
+              version: '1'
+            paths:
+              /thing:
+                get:
+                  responses:
+                    '200':
+                      description: ok
+                      content:
+                        application/json:
+                          examples:
+                            Inline:
+                              value:
+                                message: hello
+            """);
+
+        assertThat(parsed.match(HttpMethod.GET, "/thing").get().select(null, null))
+            .hasValueSatisfying(example -> assertThat(example.name()).isEqualTo("Inline"));
+    }
+
+    @Test
+    void an_example_ref_outside_components_examples_should_be_skipped() {
+        ApiExamples parsed = parser.parse(SOURCE, """
+            openapi: 3.0.3
+            info:
+              title: T
+              version: '1'
+            paths:
+              /thing:
+                get:
+                  responses:
+                    '200':
+                      description: ok
+                      content:
+                        application/json:
+                          examples:
+                            Elsewhere:
+                              $ref: '#/components/schemas/Thing'
+            components:
+              schemas:
+                Thing:
+                  type: object
+            """);
+
+        assertThat(parsed.match(HttpMethod.GET, "/thing").get().hasExamples()).isFalse();
+    }
+
+    @Test
+    void an_operation_declaring_no_responses_should_produce_no_examples() {
+        ApiExamples parsed = parser.parse(SOURCE, """
+            openapi: 3.0.3
+            info:
+              title: T
+              version: '1'
+            paths:
+              /thing:
+                get:
+                  summary: no responses at all
+            """);
+
+        assertThat(parsed.match(HttpMethod.GET, "/thing"))
+            .hasValueSatisfying(operation -> assertThat(operation.hasExamples()).isFalse());
+    }
+
+    @Test
+    void example_entry_with_nothing_in_it_should_be_skipped() {
+        ApiExamples parsed = parser.parse(SOURCE, """
+            openapi: 3.0.3
+            info:
+              title: T
+              version: '1'
+            paths:
+              /thing:
+                get:
+                  responses:
+                    '200':
+                      description: ok
+                      content:
+                        application/json:
+                          examples:
+                            Nothing:
+            """);
+
+        assertThat(parsed.match(HttpMethod.GET, "/thing").get().hasExamples()).isFalse();
+    }
+
+    @Test
+    void spec_with_no_title_should_fall_back_to_the_api_code() {
+        ApiExamples parsed = parser.parse(SOURCE, """
+            openapi: 3.0.3
+            info:
+              version: '1'
+            paths: {}
+            """);
+
+        assertThat(parsed.name()).isEqualTo("test");
+    }
+
+    @Test
     void content_declaring_no_examples_should_produce_none() {
         ApiExamples parsed = parser.parse(SOURCE, """
             openapi: 3.0.3

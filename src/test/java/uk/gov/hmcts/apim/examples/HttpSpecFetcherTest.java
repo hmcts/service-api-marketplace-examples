@@ -57,6 +57,20 @@ class HttpSpecFetcherTest {
             .hasMessageContaining("Could not fetch spec");
     }
 
+    @Test
+    void fetching_on_an_interrupted_thread_should_restore_the_interrupt_and_report_it() {
+        respondWith("/slow.yml", 200, SPEC);
+        Thread.currentThread().interrupt();
+        try {
+            assertThatThrownBy(() -> new HttpSpecFetcher().fetch(baseUrl + "/slow.yml"))
+                .isInstanceOf(SpecLoadException.class)
+                .hasMessageContaining("Interrupted fetching spec");
+            assertThat(Thread.currentThread().isInterrupted()).isTrue();
+        } finally {
+            Thread.interrupted();
+        }
+    }
+
     private void respondWith(String path, int status, String body) {
         server.createContext(path, exchange -> {
             byte[] bytes = body.getBytes(StandardCharsets.UTF_8);

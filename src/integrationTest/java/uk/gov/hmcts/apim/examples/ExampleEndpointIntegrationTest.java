@@ -96,6 +96,14 @@ class ExampleEndpointIntegrationTest {
     }
 
     @Test
+    void requesting_an_api_with_no_path_should_return_404_listing_what_is_available() throws Exception {
+        mockMvc.perform(get("/hrds"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.api").value("hrds"))
+            .andExpect(jsonPath("$.request").value("GET /"));
+    }
+
+    @Test
     void an_unmatched_path_should_return_404_listing_what_is_available() throws Exception {
         mockMvc.perform(get("/hrds/does-not-exist"))
             .andExpect(status().isNotFound())
