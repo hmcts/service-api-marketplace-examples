@@ -11,8 +11,8 @@ turn an unrelated PR red. These files pin behaviour, not currency.
 ## What that costs
 
 They go stale. If hrds renames an operation, the tests here stay green while the deployed service
-starts returning 404 for the old path. Drift is caught by the functional tests, which run against a
-deployed instance and read the live spec.
+starts returning 404 for the old path. Nothing catches that automatically — the deployed service
+reads the live spec, the tests read this copy. Refresh the copy when the upstream spec changes.
 
 ## Refreshing
 
