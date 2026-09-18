@@ -19,3 +19,9 @@ springdoc:
 spring:
   application:
     name: API Marketplace Examples
+
+marketplace:
+  specs:
+    - code: hrds
+      name: Hearing Results Document Subscription
+      url: https://raw.githubusercontent.com/hmcts/api-cp-crime-hearing-results-document-subscription/main/src/main/resources/openapi/openapi-spec.yml

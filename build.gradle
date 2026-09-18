@@ -145,6 +145,12 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
   implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.9.1'
+  implementation(group: 'io.swagger.parser.v3', name: 'swagger-parser-v3', version: '2.1.27') {
+    // springdoc supplies the jakarta build of these; the plain ones duplicate io.swagger.v3.oas.models
+    exclude group: 'io.swagger.core.v3', module: 'swagger-core'
+    exclude group: 'io.swagger.core.v3', module: 'swagger-models'
+    exclude group: 'io.swagger.core.v3', module: 'swagger-annotations'
+  }
 
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '6.1.9'
 
