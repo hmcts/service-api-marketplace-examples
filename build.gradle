@@ -46,6 +46,11 @@ configurations {
 
   smokeTestImplementation.extendsFrom testImplementation
   smokeTestRuntimeOnly.extendsFrom testRuntimeOnly
+
+  ['functionalTest', 'integrationTest', 'smokeTest'].each { name ->
+    getByName("${name}CompileOnly").extendsFrom testCompileOnly
+    getByName("${name}AnnotationProcessor").extendsFrom testAnnotationProcessor
+  }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -104,6 +109,7 @@ sonarqube {
   properties {
     property "sonar.projectName", "APIM :: marketplace-examples"
     property "sonar.projectKey", "uk.gov.hmcts.apim:marketplace-examples"
+    property "sonar.coverage.exclusions", "**/Application.java"
   }
 }
 
@@ -135,6 +141,7 @@ repositories {
 ext {
   log4JVersion = "2.25.1"
   logbackVersion = "1.5.18"
+  lombokVersion = "1.18.48"
 }
 
 ext['snakeyaml.version'] = '2.0'
@@ -159,7 +166,12 @@ dependencies {
   implementation group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
   implementation group: 'ch.qos.logback', name: 'logback-core', version: logbackVersion
 
+  compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testCompileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+  testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
   testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.5.7'
   testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
 }

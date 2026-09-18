@@ -1,7 +1,6 @@
 package uk.gov.hmcts.apim.examples;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -11,10 +10,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Component
 public class ExampleCatalogue {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ExampleCatalogue.class);
 
     private final SpecProperties properties;
     private final SpecFetcher fetcher;
@@ -53,9 +51,9 @@ public class ExampleCatalogue {
         try {
             ApiExamples examples = parser.parse(source, fetcher.fetch(source.url()));
             loaded.put(source.code(), examples);
-            LOG.info("Loaded {} operations for {} from {}", examples.operations().size(), source.code(), source.url());
+            log.info("Loaded {} operations for {} from {}", examples.operations().size(), source.code(), source.url());
         } catch (RuntimeException e) {
-            LOG.error("Could not load spec for {} from {}, it will return 503 until reloaded",
+            log.error("Could not load spec for {} from {}, it will return 503 until reloaded",
                 source.code(), source.url(), e);
         }
     }

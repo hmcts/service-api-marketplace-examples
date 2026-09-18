@@ -1,5 +1,7 @@
 package uk.gov.hmcts.apim.examples;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(properties = {
@@ -28,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "marketplace.specs[0].name=Hearing Results Document Subscription",
     "marketplace.specs[0].url=classpath:hrds"
 })
-class ExampleEndpointTest {
+class ExampleEndpointIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,16 +46,31 @@ class ExampleEndpointTest {
 
     @Test
     void getting_a_known_operation_should_return_the_spec_example() throws Exception {
-        mockMvc.perform(get("/hrds/event-types"))
+        String body = mockMvc.perform(get("/hrds/event-types"))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith("application/json"))
-            .andExpect(jsonPath("$.events[0].eventName").value("PRISON_COURT_REGISTER_GENERATED"));
+            .andExpect(jsonPath("$.events[0].eventName").value("PRISON_COURT_REGISTER_GENERATED"))
+            .andReturn().getResponse().getContentAsString();
+
+        log.info("GET /hrds/event-types\n{}", pretty(body));
     }
 
     @Test
     void getting_a_templated_path_should_return_the_example_for_any_identifier() throws Exception {
-        mockMvc.perform(get("/hrds/client-subscriptions/aa12f3dd-4cc1-4da7-b9ea-552fa3b9bc44"))
-            .andExpect(status().isOk());
+        String body = mockMvc.perform(get("/hrds/client-subscriptions/aa12f3dd-4cc1-4da7-b9ea-552fa3b9bc44"))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString();
+
+        log.info("GET /hrds/client-subscriptions/{id}\n{}", pretty(body));
+    }
+
+    @Test
+    void listing_apis_should_show_the_operations_loaded_from_the_spec() throws Exception {
+        String body = mockMvc.perform(get("/apis"))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString();
+
+        log.info("GET /apis\n{}", pretty(body));
     }
 
     @Test
@@ -119,6 +137,15 @@ class ExampleEndpointTest {
         mockMvc.perform(get("/hello"))
             .andExpect(status().isOk())
             .andExpect(content().string("Hello World"));
+    }
+
+    private String pretty(String json) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapper.readTree(json));
+        } catch (Exception e) {
+            return json;
+        }
     }
 
     @TestConfiguration
