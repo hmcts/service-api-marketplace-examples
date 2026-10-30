@@ -1,12 +1,12 @@
 services:
-  apim-marketplace-examples:
+  amp-marketplace-examples:
     build:
       context: .
       args:
         - http_proxy
         - https_proxy
         - no_proxy
-    image: hmctsprod.azurecr.io/apim/marketplace-examples
+    image: hmctsprod.azurecr.io/amp/marketplace-examples
     environment:
       # these environment variables are used by java-logging library
       - ROOT_APPENDER
