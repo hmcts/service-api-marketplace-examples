@@ -1,4 +1,4 @@
-# apim-marketplace-examples
+# amp-marketplace-examples
 
 Mock server for the HMCTS API Marketplace. It pulls published API specifications and serves the
 examples they contain, so consumers can try an API before a real implementation exists.
@@ -94,9 +94,9 @@ docker-compose up
 
 ## Infrastructure
 
-Deployed via the `apim-marketplace-examples` Helm chart. No database and no key vault — the service
+Deployed via the `amp-marketplace-examples` Helm chart. No database and no key vault — the service
 holds no secrets. If spec fetching later needs a credential, add a `keyVaults` block to
-`charts/apim-marketplace-examples/values.yaml` and a `spring.config.import` configtree entry to
+`charts/amp-marketplace-examples/values.yaml` and a `spring.config.import` configtree entry to
 `src/main/resources/application.yaml`.
 
 ## License
