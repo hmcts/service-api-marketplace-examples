@@ -168,7 +168,7 @@ dependencies {
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-webmvc-test'
   testCompileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
   testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
-  testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '6.0.1'
+  testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '6.3.0'
   testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher'
 }
 
